@@ -11,15 +11,17 @@ import {
   SendButton,
   OnlineBadge,
   ProfileImageWrapper,
-  SenderName
+  SenderName,
+  MessageTime
 } from './styles/juliaChatStyles';
 
-
+// Interface to define the structure of a chat message
 interface Message {
-  text: string;
-  sender: 'user' | 'julia';
-  profileImage?: string; 
-  senderName?: string; 
+  text: string; // The text content of the message
+  sender: 'user' | 'julia'; // Specifies who sent the message
+  profileImage?: string; // Optional: Julia's profile image
+  senderName?: string; // Optional: Sender's name (e.g., Julia)
+  time: string; // Timestamp of when the message was sent
 }
 
 const juliaResponseMap: { [key: string]: string } = {
@@ -30,51 +32,70 @@ const juliaResponseMap: { [key: string]: string } = {
 };
 
 function JuliaChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputText, setInputText] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<Message[]>([]); // Stores the chat history
+  const [inputText, setInputText] = useState(''); // Tracks the user's input
+  const messagesEndRef = useRef<HTMLDivElement>(null); // Ref to auto-scroll to the latest message
 
+  // Scrolls to the most recent message whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const generateJuliaResponse = (userMessage: string): Message => {
+    /**
+   * Generates Julia's response based on the user's input.
+   * @param userMessage - The text entered by the user.
+   * @returns A string containing Julia's response.
+   */
+  
+  const generateJuliaResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     const foundKey = Object.keys(juliaResponseMap).find((key) =>
       lowerMessage.includes(key)
     );
-  
-    const responseText = foundKey
+
+  // Return the appropriate response or a default message if no match is found
+    return foundKey
       ? juliaResponseMap[foundKey]
       : "I'm sorry, I don't understand.";
-  
-    return {
-      text: responseText,
-      sender: 'julia',
-      profileImage: require('../assets/julia-icon.png'),
-      senderName: 'Julia',
-    };
   };
-  
+
+   /**
+   * Sends the user's message and generates Julia's response with a delay.
+   */
 
   const sendMessage = () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) return; // Prevent sending empty messages
   
+    // Create a message object for the user's message
     const userMessage: Message = {
       text: inputText,
       sender: 'user',
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
-  
+
+   // Add the user's message to the chat history
     setMessages((prev) => [...prev, userMessage]);
-    setInputText('');
+    setInputText(''); // Clear the input field
   
+    // Simulate Julia's response after a 1-2 second delay
     setTimeout(() => {
-      const juliaResponse = generateJuliaResponse(inputText);
+      const juliaResponse: Message = {
+        text: generateJuliaResponse(inputText), 
+        sender: 'julia',
+        profileImage: require('../assets/julia-icon.png'), 
+        senderName: 'Julia',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+  
       setMessages((prev) => [...prev, juliaResponse]);
-    }, 1000 + Math.random() * 1000); 
+    }, 1000 + Math.random() * 1000);
   };
   
-
+  
+  /**
+   * Handles "Enter" key press in the input field to send the message.
+   * @param e - Keyboard event
+   */
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       sendMessage();
@@ -121,6 +142,7 @@ function JuliaChat() {
         )}
         <span>{msg.text}</span>
       </MessageBubble>
+      <MessageTime sender={msg.sender}>{msg.time}</MessageTime> {/* Pass sender */}
     </div>
   ))}
   <div ref={messagesEndRef} />

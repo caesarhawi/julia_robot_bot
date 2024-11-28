@@ -91,6 +91,14 @@ export const MessageInput = styled.input`
   margin-right: 10px;
 `;
 
+export const MessageTime = styled.span<{ sender: 'user' | 'julia' }>`
+font-size: 10px;
+color: #888; /* Subtle gray for timestamp */
+margin-top: 3px; /* Add space between the bubble and time */
+align-self: ${({ sender }) =>
+  sender === 'user' ? 'flex-end' : 'flex-start'}; /* Align right for user, left for Julia */
+`;
+
 export const SendButton = styled.button`
   background-color: #3498db;
   color: white;
