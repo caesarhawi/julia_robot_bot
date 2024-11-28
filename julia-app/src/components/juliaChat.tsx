@@ -8,7 +8,9 @@ import {
   MessageBubble, 
   InputArea, 
   MessageInput, 
-  SendButton 
+  SendButton,
+  OnlineBadge,
+  ProfileImageWrapper
 } from './styles/juliaChatStyles';
 
 
@@ -73,10 +75,14 @@ function JuliaChat() {
 
   return (
     <ChatContainer>
-      <ChatHeader>
+    <ChatHeader>
+      <ProfileImageWrapper>
       <ProfileImage src={require('../assets/julia-icon.png')} alt="Julia" />
-        <ProfileName>Julia</ProfileName>
-      </ChatHeader>
+        <OnlineBadge />
+      </ProfileImageWrapper>
+      <ProfileName>Julia</ProfileName>
+  </ChatHeader>
+
       
       <MessageContainer>
         {messages.map((msg, index) => (
@@ -92,7 +98,7 @@ function JuliaChat() {
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown ={handleKeyPress}
           placeholder="Type your message..."
         />
         <SendButton onClick={sendMessage}>Send</SendButton>

@@ -1,14 +1,30 @@
 import styled from 'styled-components';
 
 export const ChatContainer = styled.div`
-  width: 350px;
-  height: 500px;
+ width: 100%; 
+  height: 100%; 
+  position: fixed; 
+  bottom: 0; 
+  right: 0; 
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  margin: 20px auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  background: white;
+  z-index: 1000; 
+
+  @media (min-width: 768px) {
+    /* For desktops */
+    width: 350px; /* Smaller width */
+    height: 500px; /* Smaller height */
+    margin: 20px;
+    border-radius: 8px;
+  }
+`;
+export const ProfileImageWrapper = styled.div`
+  position: relative; 
 `;
 
 export const ChatHeader = styled.div`
@@ -19,6 +35,7 @@ export const ChatHeader = styled.div`
   padding: 10px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  position: relative;
 `;
 
 export const ProfileImage = styled.img`
@@ -76,4 +93,14 @@ export const SendButton = styled.button`
   &:hover {
     background-color: #2980b9;
   }
+`;
+export const OnlineBadge = styled.span`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+  background-color: #4caf50; 
+  border: 2px solid white; 
+  border-radius: 50%;
 `;
