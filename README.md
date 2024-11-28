@@ -28,7 +28,7 @@ Follow these instructions to set up and run the project locally.
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/caesarhawi/julia_robot_bot.git
    cd julia-chat
 
 2. Install dependencies:
