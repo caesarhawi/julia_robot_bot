@@ -58,13 +58,23 @@ export const MessageContainer = styled.div`
 `;
 
 export const MessageBubble = styled.div<{ sender: 'user' | 'julia' }>`
-  max-width: 70%;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 12px;
-  align-self: ${props => props.sender === 'user' ? 'flex-end' : 'flex-start'};
-  background-color: ${props => props.sender === 'user' ? '#3498db' : '#e0e0e0'};
-  color: ${props => props.sender === 'user' ? 'white' : 'black'};
+max-width: 70%;
+padding: 10px;
+border-radius: 12px;
+background-color: ${({ sender }) =>
+  sender === 'user' ? '#3498db' : '#e0e0e0'};
+color: ${({ sender }) => (sender === 'user' ? 'white' : 'black')};
+align-self: ${({ sender }) =>
+  sender === 'user' ? 'flex-end' : 'flex-start'};
+display: flex;
+align-items: center;
+`;
+
+export const SenderName = styled.span`
+font-size: 12px;
+font-weight: bold;
+color: #555; 
+margin-bottom: 5px; 
 `;
 
 export const InputArea = styled.div`
@@ -104,3 +114,8 @@ export const OnlineBadge = styled.span`
   border: 2px solid white; 
   border-radius: 50%;
 `;
+
+export const MessageText = styled.span`
+flex-grow: 1;
+`;
+

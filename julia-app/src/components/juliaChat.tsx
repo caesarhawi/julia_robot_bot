@@ -10,13 +10,16 @@ import {
   MessageInput, 
   SendButton,
   OnlineBadge,
-  ProfileImageWrapper
+  ProfileImageWrapper,
+  SenderName
 } from './styles/juliaChatStyles';
 
 
 interface Message {
   text: string;
   sender: 'user' | 'julia';
+  profileImage?: string; 
+  senderName?: string; 
 }
 
 const juliaResponseMap: { [key: string]: string } = {
@@ -35,37 +38,42 @@ function JuliaChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const generateJuliaResponse = (userMessage: string): string => {
+  const generateJuliaResponse = (userMessage: string): Message => {
     const lowerMessage = userMessage.toLowerCase();
-    const foundKey = Object.keys(juliaResponseMap).find(key => 
+    const foundKey = Object.keys(juliaResponseMap).find((key) =>
       lowerMessage.includes(key)
     );
-
-    return foundKey 
-      ? juliaResponseMap[foundKey] 
+  
+    const responseText = foundKey
+      ? juliaResponseMap[foundKey]
       : "I'm sorry, I don't understand.";
+  
+    return {
+      text: responseText,
+      sender: 'julia',
+      profileImage: require('../assets/julia-icon.png'),
+      senderName: 'Julia',
+    };
   };
+  
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
-
+  
     const userMessage: Message = {
       text: inputText,
-      sender: 'user'
+      sender: 'user',
     };
-
-    setMessages(prev => [...prev, userMessage]);
+  
+    setMessages((prev) => [...prev, userMessage]);
     setInputText('');
-
+  
     setTimeout(() => {
-      const juliaResponse: Message = {
-        text: generateJuliaResponse(inputText),
-        sender: 'julia'
-      };
-
-      setMessages(prev => [...prev, juliaResponse]);
-    }, 1000 + Math.random() * 1000);
+      const juliaResponse = generateJuliaResponse(inputText);
+      setMessages((prev) => [...prev, juliaResponse]);
+    }, 1000 + Math.random() * 1000); 
   };
+  
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -84,15 +92,40 @@ function JuliaChat() {
   </ChatHeader>
 
       
-      <MessageContainer>
-        {messages.map((msg, index) => (
-          <MessageBubble key={index} sender={msg.sender}>
-            {msg.text}
-          </MessageBubble>
-        ))}
-        <div ref={messagesEndRef} />
-      </MessageContainer>
-      
+  <MessageContainer>
+  {messages.map((msg, index) => (
+    <div
+      key={index}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+        marginBottom: '10px',
+      }}
+    >
+      {msg.sender === 'julia' && (
+        <SenderName>{msg.senderName || 'Julia'}</SenderName>
+      )}
+      <MessageBubble sender={msg.sender}>
+        {msg.sender === 'julia' && (
+          <img
+            src={msg.profileImage || ''}
+            alt="Julia"
+            style={{
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              marginRight: '10px',
+            }}
+          />
+        )}
+        <span>{msg.text}</span>
+      </MessageBubble>
+    </div>
+  ))}
+  <div ref={messagesEndRef} />
+</MessageContainer>
+
       <InputArea>
         <MessageInput
           type="text"
